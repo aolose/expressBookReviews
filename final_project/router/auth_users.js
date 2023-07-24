@@ -6,15 +6,14 @@ const regd_users = express.Router();
 let users = [];
 
 const isValid = (username) => { //returns boolean
-    return users.indexOf((user) => {
+    return users.findIndex((user) => {
         return (user.username === username)
     }) === -1;
 }
 
-const authenticatedUser = (username, password) => { //returns boolean
-    return users.indexOf((user) => {
-        return (user.username === username && user.password === password)
-    }) !== -1;
+const authenticatedUser = (name, pwd) => { //returns boolean
+    console.log(users, name, pwd)
+    return users.findIndex(({username, password}) => name === username && pwd === password) !== -1;
 }
 
 //only registered users can login
@@ -42,10 +41,10 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const id = req.params['isbn']
-  const book = books[id]
-  if(book)return res.status(200).json(book)
-  return res.status(404).json({message: "no matched book"});
+    const id = req.params['isbn']
+    const book = books[id]
+    if (book) return res.status(200).json(book)
+    return res.status(404).json({message: "no matched book"});
 });
 
 module.exports.authenticated = regd_users;
