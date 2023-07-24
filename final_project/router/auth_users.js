@@ -41,15 +41,25 @@ regd_users.post("/login", (req, res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params['isbn']
-    const {id=Date.now(),text} = req.body
+    const {text} = req.body
     const book = books[isbn]
-    if (book){
+    if (book) {
         const v = book.reviews
-        v[id]=text
+        v[req.session.authorization['username']] = {
+            data: Date.now(), text
+        }
         return res.send('submit success!')
-    }else  return res.status(404).json({message: "no matched isbn"});
+    } else return res.status(404).json({message: "no matched isbn"});
 });
-
+regd_users.delete("/auth/review/:isbn", (req, res, next) => {
+    const isbn = req.params['isbn']
+    const book = books[isbn]
+    if (book) {
+        const v = book.reviews
+        delete v[req.authorization['username']]
+        return res.send('delete success!')
+    } else return res.status(404).json({message: "no matched isbn"});
+})
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
