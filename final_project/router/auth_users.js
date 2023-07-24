@@ -12,7 +12,6 @@ const isValid = (username) => { //returns boolean
 }
 
 const authenticatedUser = (name, pwd) => { //returns boolean
-    console.log(users, name, pwd)
     return users.findIndex(({username, password}) => name === username && pwd === password) !== -1;
 }
 
@@ -47,8 +46,8 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (book){
         const v = book.reviews
         v[id]=text
-        return res.status('submit success!')
-    }else  res.status(404).json({message: "no matched isbn"});
+        return res.send('submit success!')
+    }else  return res.status(404).json({message: "no matched isbn"});
 });
 
 module.exports.authenticated = regd_users;
