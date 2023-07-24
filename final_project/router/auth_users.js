@@ -56,7 +56,7 @@ regd_users.delete("/auth/review/:isbn", (req, res, next) => {
     const book = books[isbn]
     if (book) {
         const v = book.reviews
-        delete v[req.authorization['username']]
+        delete v[req.session.authorization['username']]
         return res.send('delete success!')
     } else return res.status(404).json({message: "no matched isbn"});
 })
