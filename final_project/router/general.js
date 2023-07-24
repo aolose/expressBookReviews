@@ -3,11 +3,13 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-const booksData = Object.entries(books)
-    .map(([k, v]) => ({...v, isbn: k}))
 
-const getBook = (field, key) => (req, res) => {
+
+const getBook = (field, key) => async (req, res) => {
     const sc = req.params[field]?.toLowerCase()
+    const bk = await books.load()
+    const booksData = Object.entries(bk)
+        .map(([k, v]) => ({...v, isbn: k}))
     let data = booksData.filter(a => {
         const f = a[field].toLowerCase()
         if (field === 'isbn') return f === sc

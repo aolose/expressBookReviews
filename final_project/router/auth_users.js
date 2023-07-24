@@ -39,10 +39,10 @@ regd_users.post("/login", (req, res) => {
 });
 
 // Add a book review
-regd_users.put("/auth/review/:isbn", (req, res) => {
+regd_users.put("/auth/review/:isbn", async (req, res) => {
     const isbn = req.params['isbn']
     const {text} = req.body
-    const book = books[isbn]
+    const book = (await books.load())[isbn]
     if (book) {
         const v = book.reviews
         v[req.session.authorization['username']] = {
@@ -51,9 +51,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
         return res.send('submit success!')
     } else return res.status(404).json({message: "no matched isbn"});
 });
-regd_users.delete("/auth/review/:isbn", (req, res, next) => {
+regd_users.delete("/auth/review/:isbn", async (req, res, next) => {
     const isbn = req.params['isbn']
-    const book = books[isbn]
+    const book = (await books.load())[isbn]
     if (book) {
         const v = book.reviews
         delete v[req.session.authorization['username']]
