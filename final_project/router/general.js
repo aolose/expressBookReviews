@@ -5,18 +5,25 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-const getBook = (field, key) => async (req, res) => {
+/**
+ * for filter book list
+ * @param field filter by the field
+ * @param [key] the result contains only the specified fields
+ * @returns {function(req, res): Promise}
+ */
+const getBook = (field, key) => (req, res) => {
     const sc = req.params[field]?.toLowerCase()
-    const bk = await books.load()
-    const booksData = Object.entries(bk)
-        .map(([k, v]) => ({...v, isbn: k}))
-    let data = booksData.filter(a => {
-        const f = a[field].toLowerCase()
-        if (field === 'isbn') return f === sc
-        if (sc) return f.includes(sc)
+    return books.load().then(bk => {
+        const booksData = Object.entries(bk)
+            .map(([k, v]) => ({...v, isbn: k}))
+        let data = booksData.filter(a => {
+            const f = a[field].toLowerCase()
+            if (field === 'isbn') return f === sc
+            if (sc) return f.includes(sc)
+        })
+        if (key) data = data.map(a => a[key])
+        return res.json(data)
     })
-    if (key) data = data.map(a => a[key])
-    return res.json(data)
 }
 
 public_users.post("/register", (req, res) => {
