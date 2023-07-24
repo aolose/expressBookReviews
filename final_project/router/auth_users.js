@@ -41,10 +41,14 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-    const id = req.params['isbn']
-    const book = books[id]
-    if (book) return res.status(200).json(book)
-    return res.status(404).json({message: "no matched book"});
+    const isbn = req.params['isbn']
+    const {id=Date.now(),text} = req.body
+    const book = books[isbn]
+    if (book){
+        const v = book.reviews
+        v[id]=text
+        return res.status('submit success!')
+    }else  res.status(404).json({message: "no matched isbn"});
 });
 
 module.exports.authenticated = regd_users;
