@@ -43,6 +43,6 @@ public_users.get('/author/:author', getBook('author'));
 public_users.get('/title/:title', getBook('title'));
 
 //  Get book review
-public_users.get('/review/:isbn', getBook('isbn', 'review'));
+public_users.get('/review/:isbn', getBook('isbn', 'reviews'));
 
 module.exports.general = public_users;
